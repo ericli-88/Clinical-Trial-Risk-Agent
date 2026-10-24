@@ -1,0 +1,1 @@
+User request: bottom quick actions; researched CRC atom catalog; actual tool-execution summaries with progressive playback and persistent expandable history; evidence-backed results; architecture-evolution interview story; real UI screenshots using synthetic data; publish Clinical-Trial-Risk-Agent.

@@ -1,0 +1,1080 @@
+{
+  "recordedAt": "2026-10-24T03:33:38.771Z",
+  "dataset": "Wholly synthetic fixture",
+  "note": "Four development smoke cases, not a held-out benchmark or clinical validation.",
+  "results": [
+    {
+      "id": "consent",
+      "input": {
+        "action": "consent"
+      },
+      "passed": true,
+      "selection": "quick-action",
+      "tools": [
+        "consent_check"
+      ],
+      "durationMs": 23,
+      "answer": "Checked consent and randomization dates for 6 successfully enrolled subjects.\n\nFound 2 findings affecting 2 subjects. Review the findings below against the source documents before taking action.\n\nChecks cover missing consent records, missing or unparseable dates, and consent signed after randomization. This does not verify consent versions, signatures, source documents, or exact times.",
+      "events": [
+        {
+          "event": "trace",
+          "data": {
+            "id": "c4ce4639-46ea-43af-bf25-26d3fbbd0286",
+            "time": "2026-10-24T03:33:33.895Z",
+            "message": "You selected a quick action, so I can use its verified workflow directly.",
+            "stage": "routing",
+            "selection": "quick-action"
+          }
+        },
+        {
+          "event": "trace",
+          "data": {
+            "id": "9c5fad15-45ad-416b-945f-5ff7a8f9aab9",
+            "time": "2026-10-24T03:33:33.895Z",
+            "message": "I’m comparing consent and randomization records for enrolled subjects.",
+            "stage": "tool-start",
+            "tool": "consent_check",
+            "parameters": {}
+          }
+        },
+        {
+          "event": "trace",
+          "data": {
+            "id": "cd2ac6a2-9bd5-4216-84b8-b17453e77890",
+            "time": "2026-10-24T03:33:33.912Z",
+            "message": "Completed consent check. The source results are ready to review.",
+            "stage": "tool-result",
+            "tool": "consent_check",
+            "parameters": {},
+            "queries": [
+              {
+                "sql": "SELECT * FROM _source_workbook LIMIT 1",
+                "parameters": []
+              },
+              {
+                "sql": "\n    SELECT\n      COUNT(*) AS sheet_count,\n      SUM(data_rows_imported) AS total_rows,\n      SUM(non_empty_cells) AS total_cells,\n      MAX(data_rows_imported) AS max_sheet_rows\n    FROM _sheets\n  ",
+                "parameters": []
+              },
+              {
+                "sql": "\n    SELECT sheet_index, sheet_name, table_name, data_rows_imported, non_empty_cells\n    FROM _sheets\n    ORDER BY data_rows_imported DESC, sheet_index\n    LIMIT 8\n  ",
+                "parameters": []
+              },
+              {
+                "sql": "\n    SELECT sheet_name\n    FROM _sheets\n    WHERE data_rows_imported = 0\n    ORDER BY sheet_index\n  ",
+                "parameters": []
+              },
+              {
+                "sql": "\n    SELECT DISTINCT value_text\n    FROM excel_cells\n    WHERE column_header IN ('受试者筛选编号', '病例编号')\n      AND value_text IS NOT NULL\n      AND value_text <> ''\n  ",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT DISTINCT value_text AS id FROM excel_cells WHERE column_header IN ('受试者筛选编号','病例编号') AND value_text IS NOT NULL AND trim(value_text) <> '' ORDER BY value_text",
+                "parameters": []
+              },
+              {
+                "sql": "\n    SELECT sheet_index, sheet_name, table_name, max_column, data_rows_imported, non_empty_cells\n    FROM _sheets\n    ORDER BY sheet_index\n  ",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_01"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_01\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_02"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_02\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_03"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_03\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_04"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_04\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_05"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_05\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_06"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_06\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_07"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_07\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_08"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_08\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_09"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_09\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_10"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_10\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_11"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_11\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_12"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_12\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_13"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_13\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_14"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_14\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_15"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_15\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_16"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_16\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_17"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_17\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_18"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_18\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_19"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_19\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_20"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_20\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_21"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_21\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_22"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_22\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_23"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_23\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_24"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_24\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_25"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_25\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_26"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_26\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_27"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_27\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_28"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_28\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_29"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_29\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_30"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_30\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_31"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_31\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_32"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_32\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_33"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_33\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_34"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_34\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_35"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_35\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_36"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_36\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_37"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_37\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_38"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_38\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_39"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_39\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_40"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_40\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_41"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_41\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_42"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_42\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_43"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_43\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_44"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_44\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_45"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_45\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT sqlite_column_name FROM _columns WHERE table_name = ? AND original_header IN ('病例编号','受试者筛选编号') ORDER BY CASE original_header WHEN '病例编号' THEN 0 ELSE 1 END",
+                "parameters": [
+                  "sheet_46"
+                ]
+              },
+              {
+                "sql": "SELECT \"病例编号\" AS id, count(*) AS records FROM \"sheet_46\" GROUP BY \"病例编号\"",
+                "parameters": []
+              },
+              {
+                "sql": "\n    SELECT sheet_index, sheet_name, table_name, max_column, data_rows_imported, non_empty_cells\n    FROM _sheets\n    ORDER BY sheet_index\n  ",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT * FROM sheet_32",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT * FROM sheet_03",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT * FROM sheet_04",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT * FROM sheet_31",
+                "parameters": []
+              }
+            ],
+            "durationMs": 17,
+            "status": "success",
+            "resultRows": 2
+          }
+        },
+        {
+          "event": "trace",
+          "data": {
+            "id": "d3e7537a-b702-43cc-83de-d31b7bcd8657",
+            "time": "2026-10-24T03:33:33.912Z",
+            "message": "I’m preparing a source-backed summary and keeping missing data separate from confirmed protocol deviations.",
+            "stage": "answer"
+          }
+        },
+        {
+          "event": "evidence",
+          "data": [
+            {
+              "label": "Method",
+              "value": "Deterministic date and record checks"
+            },
+            {
+              "label": "Scope",
+              "value": "Successfully enrolled subjects only"
+            },
+            {
+              "label": "Source forms",
+              "value": "Enrollment; Informed consent"
+            }
+          ]
+        },
+        {
+          "event": "rows",
+          "data": [
+            {
+              "task": 1,
+              "subject": "01-005",
+              "finding": "Consent was signed after randomization",
+              "consent": "2026-09-03",
+              "randomization": "2026-09-02",
+              "source": "Enrollment Excel row 6; Informed consent Excel row 6"
+            },
+            {
+              "task": 1,
+              "subject": "01-006",
+              "finding": "No informed consent record found",
+              "consent": "Unavailable",
+              "randomization": "2026-09-02",
+              "source": "Enrollment Excel row 7"
+            }
+          ]
+        },
+        {
+          "event": "token",
+          "data": "Checked consent and randomization dates for 6 successfully enrolled subjects.\n\nFound 2 findings affecting 2 subjects. Review the findings below against the source documents before taking action.\n\nChecks cover missing consent records, missing or unparseable dates, and consent signed after randomization. This does not verify consent versions, signatures, source documents, or exact times."
+        },
+        {
+          "event": "done",
+          "data": {
+            "ok": true,
+            "selection": "quick-action",
+            "toolCount": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "compound",
+      "input": {
+        "question": "Review adverse events and medications for 01-001."
+      },
+      "passed": true,
+      "selection": "ollama",
+      "tools": [
+        "adverse_event_review",
+        "medication_review"
+      ],
+      "durationMs": 1788,
+      "answer": "Found 2 records in form 45 for subject 01-001. Showing 2 source rows.\n\nReview event details with the investigator and follow the protocol reporting procedure. Record presence or absence does not establish seriousness, causality or reporting completeness.\n\n────────\n\nFound 2 records in form 44 for subject 01-001. Showing 2 source rows.\n\nReconcile this list with source records. No drug-interaction screening or dosing decision has been performed.",
+      "events": [
+        {
+          "event": "trace",
+          "data": {
+            "id": "26a10f9c-3070-4161-b763-81fb1b440428",
+            "time": "2026-10-24T03:33:33.917Z",
+            "message": "I’m matching your request to the available CRC tools and checking which inputs are needed.",
+            "stage": "routing"
+          }
+        },
+        {
+          "event": "trace",
+          "data": {
+            "id": "0f8bbad7-29dd-4ca2-8109-06fe9523bed9",
+            "time": "2026-10-24T03:33:35.697Z",
+            "message": "The ollama model selected 2 tools. I checked the names and parameters before running them.",
+            "stage": "plan",
+            "selection": "model"
+          }
+        },
+        {
+          "event": "trace",
+          "data": {
+            "id": "ba1cdfa7-7ae5-495e-92e8-ef442d26a3a2",
+            "time": "2026-10-24T03:33:35.697Z",
+            "message": "I’m looking up recorded adverse events for this participant.",
+            "stage": "tool-start",
+            "tool": "adverse_event_review",
+            "parameters": {
+              "subjectId": "01-001",
+              "limit": 5
+            }
+          }
+        },
+        {
+          "event": "trace",
+          "data": {
+            "id": "48a37171-bb08-4044-9139-0842004fd28c",
+            "time": "2026-10-24T03:33:35.699Z",
+            "message": "Completed adverse event review. The source results are ready to review.",
+            "stage": "tool-result",
+            "tool": "adverse_event_review",
+            "parameters": {
+              "subjectId": "01-001",
+              "limit": 5
+            },
+            "queries": [
+              {
+                "sql": "\n    SELECT sheet_index, sheet_name, table_name, max_column, data_rows_imported, non_empty_cells\n    FROM _sheets\n    ORDER BY sheet_index\n  ",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT count(*) AS count FROM \"sheet_45\" WHERE \"病例编号\" = ?",
+                "parameters": [
+                  "01-001"
+                ]
+              },
+              {
+                "sql": "SELECT * FROM \"sheet_45\" WHERE \"病例编号\" = ? ORDER BY __source_row LIMIT ?",
+                "parameters": [
+                  "01-001",
+                  5
+                ]
+              }
+            ],
+            "durationMs": 2,
+            "status": "success",
+            "resultRows": 2
+          }
+        },
+        {
+          "event": "trace",
+          "data": {
+            "id": "52202b40-c1b2-46bb-b20c-94ac89e3730f",
+            "time": "2026-10-24T03:33:35.699Z",
+            "message": "I’m looking up this participant’s concomitant medication records.",
+            "stage": "tool-start",
+            "tool": "medication_review",
+            "parameters": {
+              "subjectId": "01-001",
+              "limit": 5
+            }
+          }
+        },
+        {
+          "event": "trace",
+          "data": {
+            "id": "feb30539-74fd-47dc-b52c-4b8dee6c0046",
+            "time": "2026-10-24T03:33:35.700Z",
+            "message": "Completed medication review. The source results are ready to review.",
+            "stage": "tool-result",
+            "tool": "medication_review",
+            "parameters": {
+              "subjectId": "01-001",
+              "limit": 5
+            },
+            "queries": [
+              {
+                "sql": "\n    SELECT sheet_index, sheet_name, table_name, max_column, data_rows_imported, non_empty_cells\n    FROM _sheets\n    ORDER BY sheet_index\n  ",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT count(*) AS count FROM \"sheet_44\" WHERE \"病例编号\" = ?",
+                "parameters": [
+                  "01-001"
+                ]
+              },
+              {
+                "sql": "SELECT * FROM \"sheet_44\" WHERE \"病例编号\" = ? ORDER BY __source_row LIMIT ?",
+                "parameters": [
+                  "01-001",
+                  5
+                ]
+              }
+            ],
+            "durationMs": 1,
+            "status": "success",
+            "resultRows": 2
+          }
+        },
+        {
+          "event": "trace",
+          "data": {
+            "id": "b811ab9e-7fac-4976-8a8a-6a02d89dfcdc",
+            "time": "2026-10-24T03:33:35.700Z",
+            "message": "I’m preparing a source-backed summary and keeping missing data separate from confirmed protocol deviations.",
+            "stage": "answer"
+          }
+        },
+        {
+          "event": "evidence",
+          "data": [
+            {
+              "label": "Source form",
+              "value": "不良事件记录"
+            },
+            {
+              "label": "Total matched records",
+              "value": "2"
+            },
+            {
+              "label": "Shown records",
+              "value": "2"
+            },
+            {
+              "label": "Source form",
+              "value": "合并用药记录"
+            },
+            {
+              "label": "Total matched records",
+              "value": "2"
+            },
+            {
+              "label": "Shown records",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "event": "rows",
+          "data": [
+            {
+              "task": 1,
+              "source_row": 2,
+              "病例编号": "01-001",
+              "Event term": "Synthetic headache",
+              "Onset date": "2026-09-04",
+              "Resolution date": "2026-09-05",
+              "Investigator review": "Pending source verification"
+            },
+            {
+              "task": 1,
+              "source_row": 3,
+              "病例编号": "01-001",
+              "Event term": "Synthetic nausea",
+              "Onset date": "2026-09-05",
+              "Resolution date": "",
+              "Investigator review": "Pending source verification"
+            },
+            {
+              "task": 2,
+              "source_row": 2,
+              "病例编号": "01-001",
+              "Medication": "Synthetic medication A",
+              "Start date": "2026-09-02",
+              "End date": "2026-09-06"
+            },
+            {
+              "task": 2,
+              "source_row": 3,
+              "病例编号": "01-001",
+              "Medication": "Synthetic medication B",
+              "Start date": "2026-09-08",
+              "End date": ""
+            }
+          ]
+        },
+        {
+          "event": "token",
+          "data": "Found 2 records in form 45 for subject 01-001. Showing 2 source rows.\n\nReview event details with the investigator and follow the protocol reporting procedure. Record presence or absence does not establish seriousness, causality or reporting completeness.\n\n────────\n\nFound 2 records in form 44 for subject 01-001. Showing 2 source rows.\n\nReconcile this list with source records. No drug-interaction screening or dosing decision has been performed."
+        },
+        {
+          "event": "done",
+          "data": {
+            "ok": true,
+            "selection": "ollama",
+            "toolCount": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "visit",
+      "input": {
+        "question": "Check a visit planned for 2026-10-01, actual 2026-10-05, window 2 days."
+      },
+      "passed": true,
+      "selection": "ollama",
+      "tools": [
+        "visit_window_check"
+      ],
+      "durationMs": 1666,
+      "answer": "The supplied visit occurred 4 days after the planned date. It is outside the supplied ±2-day window.\n\nThese dates and this window were supplied in the request; they were not verified against an approved protocol.",
+      "events": [
+        {
+          "event": "trace",
+          "data": {
+            "id": "50bcea23-22bc-44db-8029-d4dbbceec417",
+            "time": "2026-10-24T03:33:35.703Z",
+            "message": "I’m matching your request to the available CRC tools and checking which inputs are needed.",
+            "stage": "routing"
+          }
+        },
+        {
+          "event": "trace",
+          "data": {
+            "id": "3c5796cc-d87b-4544-b93a-d9a48218105e",
+            "time": "2026-10-24T03:33:37.366Z",
+            "message": "The ollama model selected 1 tool. I checked the names and parameters before running them.",
+            "stage": "plan",
+            "selection": "model"
+          }
+        },
+        {
+          "event": "trace",
+          "data": {
+            "id": "636ad6df-ceb3-4d23-acd0-c2006033121e",
+            "time": "2026-10-24T03:33:37.366Z",
+            "message": "I’m comparing the supplied dates with the supplied visit window.",
+            "stage": "tool-start",
+            "tool": "visit_window_check",
+            "parameters": {
+              "plannedDate": "2026-10-01",
+              "actualDate": "2026-10-05",
+              "windowDays": 2
+            }
+          }
+        },
+        {
+          "event": "trace",
+          "data": {
+            "id": "2e81d6f5-a121-45a1-9266-b9b255c879bc",
+            "time": "2026-10-24T03:33:37.367Z",
+            "message": "Completed visit window check. The source results are ready to review.",
+            "stage": "tool-result",
+            "tool": "visit_window_check",
+            "parameters": {
+              "plannedDate": "2026-10-01",
+              "actualDate": "2026-10-05",
+              "windowDays": 2
+            },
+            "queries": [],
+            "durationMs": 1,
+            "status": "success",
+            "resultRows": 1
+          }
+        },
+        {
+          "event": "trace",
+          "data": {
+            "id": "d498e0d5-90aa-4863-8510-9f469affdf73",
+            "time": "2026-10-24T03:33:37.367Z",
+            "message": "I’m preparing a source-backed summary and keeping missing data separate from confirmed protocol deviations.",
+            "stage": "answer"
+          }
+        },
+        {
+          "event": "evidence",
+          "data": [
+            {
+              "label": "Source",
+              "value": "User-supplied dates and window; deterministic UTC calendar calculation"
+            }
+          ]
+        },
+        {
+          "event": "rows",
+          "data": [
+            {
+              "task": 1,
+              "planned": "2026-10-01",
+              "actual": "2026-10-05",
+              "window_days": 2,
+              "difference_days": 4
+            }
+          ]
+        },
+        {
+          "event": "token",
+          "data": "The supplied visit occurred 4 days after the planned date. It is outside the supplied ±2-day window.\n\nThese dates and this window were supplied in the request; they were not verified against an approved protocol."
+        },
+        {
+          "event": "done",
+          "data": {
+            "ok": true,
+            "selection": "ollama",
+            "toolCount": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "blank-field",
+      "input": {
+        "question": "Count blank Resolution date values in form 45 for 01-001."
+      },
+      "passed": true,
+      "selection": "ollama",
+      "tools": [
+        "missing_field_check"
+      ],
+      "durationMs": 1403,
+      "answer": "1 existing records have a blank value in “Resolution date” (form 45).\n\nThis checks stored blanks only. Requiredness, conditional fields and entirely missing visits require the approved protocol and form rules.",
+      "events": [
+        {
+          "event": "trace",
+          "data": {
+            "id": "654abacb-1a0e-477d-9c17-9c6c91ee21af",
+            "time": "2026-10-24T03:33:37.370Z",
+            "message": "I’m matching your request to the available CRC tools and checking which inputs are needed.",
+            "stage": "routing"
+          }
+        },
+        {
+          "event": "trace",
+          "data": {
+            "id": "5f2a08e0-48bf-4401-9d7c-f24335892326",
+            "time": "2026-10-24T03:33:38.767Z",
+            "message": "The ollama model selected 1 tool. I checked the names and parameters before running them.",
+            "stage": "plan",
+            "selection": "model"
+          }
+        },
+        {
+          "event": "trace",
+          "data": {
+            "id": "f4ee9fb8-1309-44da-9434-5a38376d19f1",
+            "time": "2026-10-24T03:33:38.767Z",
+            "message": "I’m counting blank entries in the specified source field.",
+            "stage": "tool-start",
+            "tool": "missing_field_check",
+            "parameters": {
+              "formId": 45,
+              "field": "Resolution date",
+              "subjectId": "01-001"
+            }
+          }
+        },
+        {
+          "event": "trace",
+          "data": {
+            "id": "78a5c15c-7049-4e39-b6e2-2880fb87b81a",
+            "time": "2026-10-24T03:33:38.770Z",
+            "message": "Completed missing field check. The source results are ready to review.",
+            "stage": "tool-result",
+            "tool": "missing_field_check",
+            "parameters": {
+              "formId": 45,
+              "field": "Resolution date",
+              "subjectId": "01-001"
+            },
+            "queries": [
+              {
+                "sql": "\n    SELECT sheet_index, sheet_name, table_name, max_column, data_rows_imported, non_empty_cells\n    FROM _sheets\n    ORDER BY sheet_index\n  ",
+                "parameters": []
+              },
+              {
+                "sql": "SELECT count(*) AS count FROM \"sheet_45\" WHERE (\"Resolution date\" IS NULL OR trim(CAST(\"Resolution date\" AS TEXT)) = '') AND \"病例编号\" = ?",
+                "parameters": [
+                  "01-001"
+                ]
+              }
+            ],
+            "durationMs": 3,
+            "status": "success",
+            "resultRows": 1
+          }
+        },
+        {
+          "event": "trace",
+          "data": {
+            "id": "2086ba1d-4350-4cbb-82a6-af6b4fbb6f60",
+            "time": "2026-10-24T03:33:38.770Z",
+            "message": "I’m preparing a source-backed summary and keeping missing data separate from confirmed protocol deviations.",
+            "stage": "answer"
+          }
+        },
+        {
+          "event": "evidence",
+          "data": [
+            {
+              "label": "Source form",
+              "value": "不良事件记录"
+            }
+          ]
+        },
+        {
+          "event": "rows",
+          "data": [
+            {
+              "task": 1,
+              "form": 45,
+              "field": "Resolution date",
+              "blank_records": 1
+            }
+          ]
+        },
+        {
+          "event": "token",
+          "data": "1 existing records have a blank value in “Resolution date” (form 45).\n\nThis checks stored blanks only. Requiredness, conditional fields and entirely missing visits require the approved protocol and form rules."
+        },
+        {
+          "event": "done",
+          "data": {
+            "ok": true,
+            "selection": "ollama",
+            "toolCount": 1
+          }
+        }
+      ]
+    }
+  ]
+}

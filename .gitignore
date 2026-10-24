@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+data/
+temp/
+*.sqlite*
+*.xlsx
+*.xls
+*.log
+__pycache__/
+
+*import_report*.json
+*.csv
+*.tsv
