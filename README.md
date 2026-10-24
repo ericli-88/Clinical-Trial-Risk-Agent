@@ -129,17 +129,3 @@ Automated evaluation scripts benchmarked the agent against a **non-agentic basel
 | Unsupported conclusions | 18% | **6%** |
 
 Task success improved by **26 percentage points**, while unsupported conclusions decreased by **12 percentage points**. 
-
-## Layout
-
-```text
-src/ui/                 React chat and progressive execution log
-src/server/crcAgent.js   Tool catalog, validated planner and SSE route
-src/server/crcWorkspace.js   Aggregate counts and consent checks
-src/server/data_access/  Read-only workbook adapter
-src/server/model_client/    API/local model adapter and fallback
-src/workspace/          Synthetic host workspace and draggable widget
-scripts/                Fixture generation, evaluation and startup
-docs/                   Research, architecture, real captures and results
-```
-
