@@ -1,1 +1,3 @@
 User request: bottom quick actions; researched CRC atom catalog; actual tool-execution summaries with progressive playback and persistent expandable history; evidence-backed results; architecture-evolution interview story; real UI screenshots using synthetic data; publish Clinical-Trial-Risk-Agent.
+
+2026-10-23 follow-up: Author exactly 50 diverse model/agent evaluation scenarios, with expected tool calls, parameters, fixture facts and human review criteria. Include a reproducible runner, report the current model's actual performance without tuning the agent to the cases, and publish the suite and results in the existing GitHub repository.

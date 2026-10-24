@@ -53,3 +53,7 @@ Collapsed mode shows one bullet at a time for about 2.6 seconds. Expanded mode s
 Tests cover exact-match filtering, bounded reads, injection rejection, dates, unknown fields/IDs, draft provenance, SQL logs and provider fallback. A live local-Qwen compound request is captured separately. Screenshots show real interactions with synthetic fixtures. There is no clinical validation or deployment benchmark.
 
 Next: held-out paraphrases, missing-input clarification, misleading user instructions, schema drift, session privacy and clinician review of wording. Provider requests have a timeout. Client disconnects abort the upstream planning request and prevent subsequent tool execution.
+
+## First broader development evaluation
+
+A subsequent [50-case suite](../eval/README.md) now tests ten dimensions against the unmodified Agent. The first recorded Qwen run passed 32/50 strict model-mediated automatic checks and 36/50 system checks when successful fallback is included. Cases revealed redundant retrieval, incorrect display limits, misunderstood evidence capabilities and unrelated fallback actions. One refusal appears to be a scoring false negative. See the [recorded baseline](evaluation/MODEL-BASELINE.md) and [developer review](evaluation/BASELINE-REVIEW.md). This adds measured development evidence to the evolution story without claiming held-out accuracy or clinical validation.
