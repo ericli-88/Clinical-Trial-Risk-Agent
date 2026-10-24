@@ -130,8 +130,6 @@ Automated evaluation scripts benchmarked the agent against a **non-agentic basel
 
 Task success improved by **26 percentage points**, while unsupported conclusions decreased by **12 percentage points**. These are development benchmark results on synthetic cases, not clinical validation or held-out model accuracy.
 
-Read the [50 prompts and expectations](docs/evaluation/CASE-CATALOG.md). The [earlier local-Qwen baseline summary](docs/evaluation/MODEL-BASELINE.md), [recorded outputs](docs/evaluation/model-50-results.json) and [failure analysis, including a likely scoring false negative](docs/evaluation/BASELINE-REVIEW.md) document a separate historical development run: **32/50 model-mediated automatic passes** and **36/50 system automatic passes**, with human-quality reviews pending. Those artifacts do not document the agent-versus-non-agentic comparison above; rules fallback was excluded from model success in that historical run.
-
 ## Data and integration boundaries
 
 The SQLite connection is read-only. Tools cannot execute model-generated SQL, send messages, modify EDC, submit safety reports or make treatment decisions. Visit windows require supplied dates and rules. Consent checks do not establish signature validity, approved version, exact time or source-document completeness.
