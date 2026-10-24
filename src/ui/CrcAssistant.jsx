@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import './CrcAssistant.css'
 import './SimpleAssistant.css'
+import ClinicalCharts from './ClinicalCharts.jsx'
 
 export function BotIcon({ size = 24 }) {
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v3M10.5 3h3M5 10H3v6h2m14-6h2v6h-2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/><rect x="5" y="6" width="14" height="14" rx="5" stroke="currentColor" strokeWidth="1.7"/><circle cx="9" cy="12" r="1.2" fill="currentColor"/><circle cx="15" cy="12" r="1.2" fill="currentColor"/><path d="M9 16h6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/></svg>
@@ -66,6 +67,7 @@ export default function CrcAssistant() {
   const [showSubject, setShowSubject] = useState(false)
   const [initialError, setInitialError] = useState('')
   const [modelStatus, setModelStatus] = useState(null)
+  const [dataSource, setDataSource] = useState(null)
   const [sessionId, setSessionId] = useState(() => crypto.randomUUID())
   const scrollRef = useRef(null)
   const inputRef = useRef(null)
@@ -83,6 +85,7 @@ export default function CrcAssistant() {
     fetch('/api/crc/workspace', { signal: controller.signal }).then(async response => {
       if (!response.ok) throw new Error('EDC data is unavailable. Check that the local backend is running.')
       const data = await response.json()
+      setDataSource(data.source)
       setSubjects(data.subjects || [])
       setSubjectId(data.subjects?.[0]?.id || '')
     }).catch(error => { if (error.name !== 'AbortError') setInitialError(error.message) })
@@ -156,6 +159,7 @@ export default function CrcAssistant() {
       if (event === 'token') { answer += data; updateMessage(turn.id, { text: safeAnswer(answer) }) }
       if (event === 'evidence') updateMessage(turn.id, { evidence: data })
       if (event === 'rows') updateMessage(turn.id, { rows: data })
+      if (event === 'visuals') updateMessage(turn.id, { visuals: data })
       if (event === 'done') { completed = true; updateMessage(turn.id, { verified: data.ok && data.toolCount > 0, error: !data.ok }) }
     }
     while (true) {
@@ -197,11 +201,11 @@ export default function CrcAssistant() {
   }
 
   return <div className={`crc-assistant ${embedded ? 'embedded' : 'standalone'}`}>
-    <div className="synthetic-banner">SYNTHETIC DEMO · No patient data</div><header className="assistant-header"><div className="assistant-brand"><span className="bot-mark"><BotIcon /></span><div><strong>Clinical Trial Assistant</strong><span title={modelStatus?.fallbackReason || 'Your CRC workspace companion'}><i /> {modelStatus ? modelStatus.provider === 'ollama' ? `Local · ${modelStatus.model}` : `API · ${modelStatus.model}` : 'Your CRC workspace companion'}</span></div></div><button className="new-chat" onClick={newChat} disabled={busy} title="Start a new conversation" aria-label="New conversation">＋</button></header>
+    <div className="synthetic-banner">{dataSource ? dataSource.synthetic ? 'SYNTHETIC DEMO · No patient data' : 'PRIVATE LOCAL WORKBOOK · Read-only snapshot' : 'Checking dataset connection…'}</div><header className="assistant-header"><div className="assistant-brand"><span className="bot-mark"><BotIcon /></span><div><strong>Clinical Trial Assistant</strong><span title={modelStatus?.fallbackReason || 'Your CRC workspace companion'}><i /> {modelStatus ? modelStatus.provider === 'ollama' ? `Local · ${modelStatus.model}` : `API · ${modelStatus.model}` : 'Your CRC workspace companion'}</span></div></div><button className="new-chat" onClick={newChat} disabled={busy} title="Start a new conversation" aria-label="New conversation">＋</button></header>
     <main className="chat-messages" ref={scrollRef} aria-label="Conversation" aria-busy={busy}>
       {initialError && <div className="connection-error" role="alert">{initialError}</div>}
-      {!messages.length && <div className="assistant-welcome"><h1>How can I help?</h1><p>Ask about your EDC data, or choose a quick action below.</p><p className="data-scope-note">Portfolio demo: all participants, events and findings shown here are synthetic. No real patient data is included.</p></div>}
-      {messages.map(message => <article key={message.id} className={`chat-message ${message.role} ${message.error ? 'has-error' : ''}`}><div className="message-byline">{message.role === 'assistant' ? <><BotIcon size={17} /> TrialData <span>{message.verified ? 'Source-backed' : 'Assistant'}</span></> : <>You <span>CRC</span></>}</div>{message.role === 'assistant' && <Thinking message={message} onSettled={settlePresentation} />}{message.role === 'user' || (!message.pending && !message.presenting) ? <AnswerText text={message.text} /> : null}{!message.pending && !message.presenting && <Evidence message={message} />}</article>)}
+      {!messages.length && <div className="assistant-welcome"><h1>How can I help?</h1><p>Ask about your EDC data, or choose a quick action below.</p><p className="data-scope-note">{dataSource?.synthetic ? 'All participants, events and findings in this demo are synthetic.' : 'Connected to your local clinical workbook. Source records remain local; charts preserve units and source references.'}</p></div>}
+      {messages.map(message => <article key={message.id} className={`chat-message ${message.role} ${message.error ? 'has-error' : ''}`}><div className="message-byline">{message.role === 'assistant' ? <><BotIcon size={17} /> TrialData <span>{message.verified ? 'Source-backed' : 'Assistant'}</span></> : <>You <span>CRC</span></>}</div>{message.role === 'assistant' && <Thinking message={message} onSettled={settlePresentation} />}{message.role === 'user' || (!message.pending && !message.presenting) ? <AnswerText text={message.text} /> : null}{!message.pending && !message.presenting && <ClinicalCharts charts={message.visuals} />}{!message.pending && !message.presenting && <Evidence message={message} />}</article>)}
     </main>
     <footer className="assistant-composer">    <nav className="quick-actions" aria-label="CRC quick actions">{ACTIONS.map(action => <button key={action.id} disabled={busy} onClick={() => action.id === 'subject' ? setShowSubject(value => !value) : runAction(action.id)}><span>{action.icon}</span>{action.label}</button>)}</nav>
     {showSubject && <form className="subject-picker" onSubmit={event => { event.preventDefault(); runAction('subject', subjectId) }}><label htmlFor="subject-picker">Choose a subject</label><div><select id="subject-picker" value={subjectId} onChange={event => setSubjectId(event.target.value)}>{subjects.map(subject => <option key={subject.id} value={subject.id}>{subject.id}</option>)}</select><button disabled={!subjectId || busy}>View snapshot →</button><button type="button" className="picker-cancel" onClick={() => setShowSubject(false)} aria-label="Cancel subject selection">×</button></div></form>}

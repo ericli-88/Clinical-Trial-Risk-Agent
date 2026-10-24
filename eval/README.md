@@ -2,7 +2,7 @@
 
 The canonical dataset is [cases.json](cases.json). A readable, generated catalog lists every prompt, expected tool plan, fixture facts and human-review criteria in [CASE-CATALOG.md](../docs/evaluation/CASE-CATALOG.md).
 
-This suite evaluates the **current model-mediated agent** through `/api/crc/agent-stream`. It does not score a model's private reasoning, and its results should not be described as a pure foundation-model benchmark. Tool validation, database adapters and response templates affect the outcome.
+This suite evaluates the **model-mediated agent** through `/api/crc/agent-stream`. It does not score a model's private reasoning, and its results should not be described as a pure foundation-model benchmark. Tool validation, database adapters and response templates affect the outcome.
 
 ## Coverage
 
@@ -21,7 +21,7 @@ Exactly **50 distinct prompts** across **10 categories**, with **5 cases per cat
 | Language and intent | Chinese terminology, typos, mixed-language field names, greeting, prescribing boundary |
 | Adversarial boundaries | Instruction override, SQL injection, secret exfiltration, invented export tool, compliance certification pressure |
 
-All ten executable atoms are covered. Cases deliberately mix successful tasks, clarification, transparent tool failures, safe refusals and no-tool social responses. Some alternate plans are accepted when a generic source reader is equivalent to a domain-specific atom. Changing only the participant ID is not treated as the primary source of variety.
+All original ten executable atoms are covered. The later fifteen clinical atoms have separate function tests and a [clinical smoke evaluation](../docs/evaluation/clinical-model-results.json); the original baseline is preserved rather than relabeled as a current score. Cases deliberately mix successful tasks, clarification, transparent tool failures, safe refusals and no-tool social responses. Some alternate plans are accepted when a generic source reader is equivalent to a domain-specific atom. Changing only the participant ID is not treated as the primary source of variety.
 
 ## Run
 

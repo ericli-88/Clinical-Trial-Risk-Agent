@@ -27,7 +27,7 @@ flowchart TD
     R -->|Quick action| P[Predefined call]
     R -->|Natural language| L[API or local Qwen: JSON plan]
     L --> V[Allowlist and parameter validation]
-    L -->|Unavailable or invalid| F[Limited rules fallback, visibly labeled]
+    L -->|Unavailable or invalid| F[Stop without data access; offer explicit quick action]
     F --> V
     P --> V
     V --> T[Read-only SQL / calendar function / unsent draft]
@@ -57,3 +57,7 @@ Next: held-out paraphrases, missing-input clarification, misleading user instruc
 ## First broader development evaluation
 
 A subsequent [50-case suite](../eval/README.md) now tests ten dimensions against the unmodified Agent. The first recorded Qwen run passed 32/50 strict model-mediated automatic checks and 36/50 system checks when successful fallback is included. Cases revealed redundant retrieval, incorrect display limits, misunderstood evidence capabilities and unrelated fallback actions. One refusal appears to be a scoring false negative. See the [recorded baseline](evaluation/MODEL-BASELINE.md) and [developer review](evaluation/BASELINE-REVIEW.md). This adds measured development evidence to the evolution story without claiming held-out accuracy or clinical validation.
+
+## Private workbook and clinical tools
+
+The next iteration grounds the Agent in actual workbook field roles and adds fifteen clinical functions plus typed line, bar, scatter, date-list and heatmap outputs. Qualified numeric values, missing units, cycle boundaries and repeated lesion totals are handled by code rather than model prose. A separate rich synthetic fixture tests these contracts without publishing private source records. Rejected plans now stop without querying, addressing the unrelated fallback lookups observed in the first baseline. See [clinical workflows](CLINICAL-WORKFLOWS.md) and the [15-case smoke run](evaluation/clinical-model-results.json); the older 32/50 score remains historical.

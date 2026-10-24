@@ -11,7 +11,9 @@ This is a research-informed coordinator-support prototype, not a validated clini
 
 Consulted 23 October 2026. The mapping below is an engineering interpretation, not an official regulatory checklist.
 
-## Implemented catalog
+## Original ten-tool catalog
+
+The current system additionally implements fifteen [schema-aware clinical tools and chart contracts](CLINICAL-WORKFLOWS.md), for a total of 25 tools.
 
 | CRC need | Atom | Inputs | Operation | Boundary |
 |---|---|---|---|---|

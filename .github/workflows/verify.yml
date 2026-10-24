@@ -11,4 +11,5 @@ jobs:
       - run: npm install --global pnpm@11.25.0
       - run: pnpm install --frozen-lockfile --ignore-scripts
       - run: pnpm test
+      - run: pnpm test:clinical
       - run: pnpm build

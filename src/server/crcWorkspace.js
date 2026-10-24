@@ -49,7 +49,7 @@ export function getCrcWorkspace() {
   const summary = getWorkbookSummary()
   const subjects = subjectData()
   return {
-    source: { type: process.env.EDC_DEMO === 'true' ? 'Synthetic EDC demo (not patient data)' : 'Local EDC workbook snapshot', study: process.env.EDC_DEMO === 'true' ? 'Synthetic demonstration study' : 'CNS lymphoma · combination therapy', importedAt: summary.workbook.imported_at, liveSync: false },
+    source: { synthetic: process.env.EDC_DEMO === 'true', type: process.env.EDC_DEMO === 'true' ? 'Synthetic EDC demo (not patient data)' : 'Local EDC workbook snapshot', study: process.env.EDC_DEMO === 'true' ? 'Synthetic demonstration study' : 'CNS lymphoma · combination therapy', importedAt: summary.workbook.imported_at, liveSync: false },
     metrics: { forms: summary.sheetCount, records: summary.totalRows, cells: summary.totalCells, subjectIds: subjects.length, emptyForms: summary.emptySheets.length },
     forms: listSheets().map(sheet => ({ id: sheet.sheet_index, name: formName(sheet), originalName: sheet.sheet_name, records: sheet.data_rows_imported, fields: sheet.max_column })),
     subjects,

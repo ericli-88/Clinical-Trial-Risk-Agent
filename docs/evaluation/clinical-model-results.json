@@ -1,0 +1,652 @@
+{
+  "recordedAt": "2026-10-24T04:36:28.453Z",
+  "fixture": "Rich wholly synthetic clinical fixture; not private workbook records",
+  "note": "15 development smoke cases, one per new atom. Checks tool selection, completion and chart kind; not medical interpretation quality.",
+  "passed": 13,
+  "total": 15,
+  "results": [
+    {
+      "question": "Show the available fields and analyte labels in chemistry form 15.",
+      "expectedTool": "schema_catalog",
+      "expectedVisual": null,
+      "passed": true,
+      "modelSelected": true,
+      "provider": "ollama",
+      "calls": [
+        {
+          "name": "schema_catalog",
+          "args": {}
+        }
+      ],
+      "charts": [],
+      "answer": "Discovered 46 forms and 144 source fields. Header metadata is not participant evidence. Use a specific form ID for a shorter field listing.\n\nShowing 100 of 144 result rows.",
+      "durationMs": 2802
+    },
+    {
+      "question": "Count stored enrollment records by enrollment status.",
+      "expectedTool": "enrollment_summary",
+      "expectedVisual": "bar",
+      "passed": false,
+      "modelSelected": false,
+      "provider": "fallback",
+      "calls": [],
+      "charts": [],
+      "answer": "I could not validate a model-selected workflow for this request. Please specify the exact subject ID and task, or use a quick action. No data tools were run.",
+      "durationMs": 1299
+    },
+    {
+      "question": "Show a timeline of recorded visits, consent, treatment and safety dates for 01-001.",
+      "expectedTool": "participant_timeline",
+      "expectedVisual": "timeline",
+      "passed": true,
+      "modelSelected": true,
+      "provider": "ollama",
+      "calls": [
+        {
+          "name": "participant_timeline",
+          "args": {
+            "subjectId": "01-001",
+            "display": "timeline"
+          }
+        }
+      ],
+      "charts": [
+        {
+          "kind": "timeline",
+          "title": "Participant source-event timeline",
+          "data": [
+            {
+              "date": "2026-09-01",
+              "event": "signed",
+              "visit": "",
+              "source": "Form 3 · Excel row 2",
+              "start": "2026-09-01",
+              "drug": "signed",
+              "pointEvent": true
+            },
+            {
+              "date": "2026-09-01",
+              "event": "treatmentDate",
+              "visit": "C1",
+              "source": "Form 36 · Excel row 2",
+              "start": "2026-09-01",
+              "drug": "treatmentDate",
+              "pointEvent": true
+            },
+            {
+              "date": "2026-09-02",
+              "event": "randomized",
+              "visit": "",
+              "source": "Form 32 · Excel row 2",
+              "start": "2026-09-02",
+              "drug": "randomized",
+              "pointEvent": true
+            },
+            {
+              "date": "2026-09-03",
+              "event": "onset",
+              "visit": "C1",
+              "source": "Form 45 · Excel row 2",
+              "start": "2026-09-03",
+              "drug": "onset",
+              "pointEvent": true
+            },
+            {
+              "date": "2026-10-03",
+              "event": "actualVisit",
+              "visit": "Week 4",
+              "source": "Form 2 · Excel row 2",
+              "start": "2026-10-03",
+              "drug": "actualVisit",
+              "pointEvent": true
+            }
+          ]
+        }
+      ],
+      "answer": "Assembled 5 recorded date events; excluded 0 unparseable dates. Repeated events are preserved; chronological proximity is not evidence of causality or protocol compliance.\n\nShowing 5 of 5 result rows.",
+      "durationMs": 1619
+    },
+    {
+      "question": "Show the creatinine trend for 01-001 from chemistry form 15.",
+      "expectedTool": "lab_trend",
+      "expectedVisual": "line",
+      "passed": true,
+      "modelSelected": true,
+      "provider": "ollama",
+      "calls": [
+        {
+          "name": "lab_trend",
+          "args": {
+            "subjectId": "01-001",
+            "formId": 15,
+            "analyte": "creatinine"
+          }
+        }
+      ],
+      "charts": [
+        {
+          "kind": "line",
+          "title": "creatinine over collection dates",
+          "data": [
+            {
+              "label": "肌酐Cr · μmol/L",
+              "points": [
+                {
+                  "x": "2026-09-01",
+                  "y": 90,
+                  "source": "Form 15 · Excel row 2",
+                  "raw": "90"
+                },
+                {
+                  "x": "2026-09-08",
+                  "y": 130,
+                  "source": "Form 15 · Excel row 3",
+                  "raw": "130"
+                }
+              ]
+            }
+          ],
+          "unit": "μmol/L",
+          "xLabel": "Collection date",
+          "yLabel": "μmol/L"
+        },
+        {
+          "kind": "line",
+          "title": "creatinine over collection dates",
+          "data": [
+            {
+              "label": "肌酐Cr · mg/dL",
+              "points": [
+                {
+                  "x": "2026-09-15",
+                  "y": 1.1,
+                  "source": "Form 15 · Excel row 6",
+                  "raw": "1.1"
+                }
+              ]
+            }
+          ],
+          "unit": "mg/dL",
+          "xLabel": "Collection date",
+          "yLabel": "mg/dL"
+        }
+      ],
+      "answer": "Retrieved 5 laboratory observations; 3 numeric dated points can be plotted. Unit typography is normalized; no unit conversion, averaging or CTCAE grading was performed. Qualified values and missing dates remain in the evidence table rather than becoming exact plotted measurements.\n\nShowing 5 of 5 result rows.",
+      "durationMs": 1735
+    },
+    {
+      "question": "Compare creatinine records for 01-001 in form 15 against their stored reference limits.",
+      "expectedTool": "lab_reference_review",
+      "expectedVisual": "bar",
+      "passed": true,
+      "modelSelected": true,
+      "provider": "ollama",
+      "calls": [
+        {
+          "name": "lab_reference_review",
+          "args": {
+            "formId": 15,
+            "subjectId": "01-001",
+            "analyte": "creatinine"
+          }
+        }
+      ],
+      "charts": [
+        {
+          "kind": "bar",
+          "title": "Stored reference-range review",
+          "data": [
+            {
+              "label": "Within stored range",
+              "count": 3
+            },
+            {
+              "label": "Above stored range",
+              "count": 1
+            },
+            {
+              "label": "Not comparable",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "answer": "Compared 5 stored lab records with their own reference limits. Out-of-range flags do not establish CTCAE grade, causality or a treatment decision.\n\nShowing 5 of 5 result rows.",
+      "durationMs": 1763
+    },
+    {
+      "question": "Plot the recorded MTX concentrations versus hours since dose for 01-001, keeping cycles separate.",
+      "expectedTool": "mtx_concentration_review",
+      "expectedVisual": "line",
+      "passed": true,
+      "modelSelected": true,
+      "provider": "ollama",
+      "calls": [
+        {
+          "name": "mtx_concentration_review",
+          "args": {
+            "subjectId": "01-001",
+            "display": "line"
+          }
+        }
+      ],
+      "charts": [
+        {
+          "kind": "line",
+          "title": "MTX concentrations by recorded hours",
+          "data": [
+            {
+              "label": "C1",
+              "points": [
+                {
+                  "x": 0,
+                  "y": 12,
+                  "source": "Form 34 · Excel row 2",
+                  "raw": "12"
+                },
+                {
+                  "x": 24,
+                  "y": 1.2,
+                  "source": "Form 34 · Excel row 3",
+                  "raw": "1.2"
+                }
+              ]
+            },
+            {
+              "label": "C2",
+              "points": [
+                {
+                  "x": 24,
+                  "y": 2.1,
+                  "source": "Form 34 · Excel row 6",
+                  "raw": "2.1"
+                }
+              ]
+            }
+          ],
+          "unit": "μmol/L",
+          "xLabel": "Hours since last dose (source label)",
+          "yLabel": "μmol/L"
+        }
+      ],
+      "answer": "Retrieved 5 MTX source rows. 3 points have explicit hour labels and unqualified numeric concentrations. Time-to-threshold summary rows are excluded from the hour plot. Curves remain separate by visit/cycle; no toxicity threshold, clearance diagnosis or dose advice is inferred.\n\nShowing 5 of 5 result rows.",
+      "durationMs": 1626
+    },
+    {
+      "question": "Review MTX observations alongside rescue-medication records for 01-001. Do not recommend a dose.",
+      "expectedTool": "mtx_rescue_review",
+      "expectedVisual": "timeline",
+      "passed": false,
+      "modelSelected": true,
+      "provider": "ollama",
+      "calls": [
+        {
+          "name": "mtx_concentration_review",
+          "args": {
+            "subjectId": "01-001",
+            "display": "table"
+          }
+        },
+        {
+          "name": "mtx_rescue_review",
+          "args": {
+            "subjectId": "01-001",
+            "display": "table"
+          }
+        }
+      ],
+      "charts": [],
+      "answer": "Retrieved 5 MTX source rows. 3 points have explicit hour labels and unqualified numeric concentrations. Time-to-threshold summary rows are excluded from the hour plot. Curves remain separate by visit/cycle; no toxicity threshold, clearance diagnosis or dose advice is inferred.\n\nShowing 5 of 5 result rows.\n\n────────\n\nRetrieved 5 MTX observation rows and 1 rescue-medication rows by exact subject. They are separate source streams, not a dose-to-sample causal join. No rescue dose or timing recommendation was calculated.\n\nShowing 6 of 6 result rows.",
+      "durationMs": 2014
+    },
+    {
+      "question": "Show induction study-drug and oral study-medication history for 01-001.",
+      "expectedTool": "treatment_history",
+      "expectedVisual": "timeline",
+      "passed": true,
+      "modelSelected": true,
+      "provider": "ollama",
+      "calls": [
+        {
+          "name": "treatment_history",
+          "args": {
+            "subjectId": "01-001"
+          }
+        }
+      ],
+      "charts": [
+        {
+          "kind": "timeline",
+          "title": "Recorded medication and treatment dates",
+          "data": [
+            {
+              "subject": "01-001",
+              "visit": "C1",
+              "drug": "Synthetic study medication",
+              "start": "2026-09-01",
+              "end": null,
+              "pointEvent": true,
+              "dose": "100",
+              "unit": "mg",
+              "ongoing": "",
+              "source": "Form 36 · Excel row 2"
+            },
+            {
+              "subject": "01-001",
+              "visit": "C1",
+              "drug": "Synthetic oral medication",
+              "start": "2026-09-01",
+              "end": "2026-09-05",
+              "pointEvent": false,
+              "dose": "10",
+              "unit": "mg",
+              "ongoing": "",
+              "source": "Form 37 · Excel row 2"
+            }
+          ]
+        }
+      ],
+      "answer": "Retrieved 2 medication/treatment records. Unknown end dates remain unknown. Stored doses are reproduced, not prescribed. Tablet counts alone do not establish adherence.\n\nShowing 2 of 2 result rows.",
+      "durationMs": 1519
+    },
+    {
+      "question": "Review recorded CTCAE grades and SAE flags for adverse events in 01-001.",
+      "expectedTool": "ae_followup_review",
+      "expectedVisual": "bar",
+      "passed": true,
+      "modelSelected": true,
+      "provider": "ollama",
+      "calls": [
+        {
+          "name": "ae_followup_review",
+          "args": {
+            "subjectId": "01-001",
+            "display": "auto"
+          }
+        }
+      ],
+      "charts": [
+        {
+          "kind": "bar",
+          "title": "Recorded adverse-event grades",
+          "data": [
+            {
+              "label": "2级",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "answer": "Reviewed 1 named adverse-event records. 1 have no parseable stored end date. Grades and SAE flags are recorded fields, not new assessments; an absent end date does not prove an event is ongoing.\n\nShowing 1 of 1 result rows.",
+      "durationMs": 1589
+    },
+    {
+      "question": "Show the concomitant medication timeline for 01-001, leaving unknown end dates unknown.",
+      "expectedTool": "medication_timeline",
+      "expectedVisual": "timeline",
+      "passed": true,
+      "modelSelected": true,
+      "provider": "ollama",
+      "calls": [
+        {
+          "name": "medication_timeline",
+          "args": {
+            "subjectId": "01-001",
+            "display": "timeline"
+          }
+        }
+      ],
+      "charts": [
+        {
+          "kind": "timeline",
+          "title": "Recorded medication and treatment dates",
+          "data": [
+            {
+              "subject": "01-001",
+              "visit": "",
+              "drug": "Synthetic medication A",
+              "start": "2026-09-02",
+              "end": "2026-09-06",
+              "pointEvent": false,
+              "dose": "",
+              "unit": "",
+              "ongoing": "",
+              "source": "Form 44 · Excel row 2"
+            },
+            {
+              "subject": "01-001",
+              "visit": "",
+              "drug": "Synthetic medication B",
+              "start": "2026-09-08",
+              "end": null,
+              "pointEvent": false,
+              "dose": "",
+              "unit": "",
+              "ongoing": "",
+              "source": "Form 44 · Excel row 3"
+            }
+          ]
+        }
+      ],
+      "answer": "Retrieved 2 medication/treatment records. Unknown end dates remain unknown. Stored doses are reproduced, not prescribed. Tablet counts alone do not establish adherence.\n\nShowing 2 of 2 result rows.",
+      "durationMs": 1562
+    },
+    {
+      "question": "Review the stored eligibility checklist responses for 01-001 without deciding final eligibility.",
+      "expectedTool": "eligibility_record_review",
+      "expectedVisual": null,
+      "passed": true,
+      "modelSelected": true,
+      "provider": "ollama",
+      "calls": [
+        {
+          "name": "eligibility_record_review",
+          "args": {
+            "subjectId": "01-001",
+            "display": "auto"
+          }
+        }
+      ],
+      "charts": [],
+      "answer": "Retrieved 2 criterion-response entries. 1 are blank. This reviews stored checklist entries; it does not certify eligibility or reinterpret inclusion/exclusion logic.\n\nShowing 2 of 2 result rows.",
+      "durationMs": 1552
+    },
+    {
+      "question": "Show stored response, PFS, OS and completion form coverage for 01-001. Do not estimate survival.",
+      "expectedTool": "followup_coverage",
+      "expectedVisual": "bar",
+      "passed": true,
+      "modelSelected": true,
+      "provider": "ollama",
+      "calls": [
+        {
+          "name": "followup_coverage",
+          "args": {
+            "subjectId": "01-001"
+          }
+        }
+      ],
+      "charts": [
+        {
+          "kind": "bar",
+          "title": "Stored follow-up records",
+          "data": [
+            {
+              "label": "Consolidation",
+              "form": 38,
+              "count": 0
+            },
+            {
+              "label": "Response assessment",
+              "form": 39,
+              "count": 1
+            },
+            {
+              "label": "PFS follow-up",
+              "form": 41,
+              "count": 0
+            },
+            {
+              "label": "OS follow-up",
+              "form": 42,
+              "count": 0
+            },
+            {
+              "label": "Death report",
+              "form": 43,
+              "count": 0
+            },
+            {
+              "label": "Study completion",
+              "form": 46,
+              "count": 0
+            }
+          ]
+        }
+      ],
+      "answer": "Counted stored follow-up form rows. Zero rows mean no records in this snapshot, not overdue visits, absence of death, treatment failure or a survival estimate. Populated rows may still contain blank outcome fields.\n\nShowing 6 of 6 result rows.",
+      "durationMs": 1442
+    },
+    {
+      "question": "Show an existing-records heatmap by visit for forms 15 and 34 for 01-001.",
+      "expectedTool": "visit_form_matrix",
+      "expectedVisual": "heatmap",
+      "passed": true,
+      "modelSelected": true,
+      "provider": "ollama",
+      "calls": [
+        {
+          "name": "visit_form_matrix",
+          "args": {
+            "subjectId": "01-001",
+            "formIds": [
+              15,
+              34
+            ],
+            "display": "heatmap"
+          }
+        }
+      ],
+      "charts": [
+        {
+          "kind": "heatmap",
+          "title": "Existing records by visit and form",
+          "data": [
+            {
+              "visit": "C1",
+              "form": 15,
+              "count": 1
+            },
+            {
+              "visit": "C1",
+              "form": 34,
+              "count": 4
+            },
+            {
+              "visit": "C2",
+              "form": 15,
+              "count": 2
+            },
+            {
+              "visit": "C2",
+              "form": 34,
+              "count": 1
+            },
+            {
+              "visit": "C3",
+              "form": 15,
+              "count": 2
+            },
+            {
+              "visit": "C3",
+              "form": 34,
+              "count": 0
+            }
+          ],
+          "forms": [
+            15,
+            34
+          ],
+          "visits": [
+            "C1",
+            "C2",
+            "C3"
+          ]
+        }
+      ],
+      "answer": "Built a 3-visit by 2-form matrix of existing records. These are long-form record counts, not completeness percentages or missing required visit flags. No expected visit schedule was assumed.\n\nShowing 6 of 6 result rows.",
+      "durationMs": 1711
+    },
+    {
+      "question": "Plot stored target-lesion products over assessment dates for 01-001; do not infer response.",
+      "expectedTool": "lesion_measurement_review",
+      "expectedVisual": "scatter",
+      "passed": true,
+      "modelSelected": true,
+      "provider": "ollama",
+      "calls": [
+        {
+          "name": "lesion_measurement_review",
+          "args": {
+            "subjectId": "01-001",
+            "display": "scatter"
+          }
+        }
+      ],
+      "charts": [
+        {
+          "kind": "scatter",
+          "title": "Stored target-lesion products",
+          "data": [
+            {
+              "label": "Synthetic site A",
+              "points": [
+                {
+                  "x": "2026-09-01",
+                  "y": 200,
+                  "source": "Form 29 · Excel row 2",
+                  "raw": "200"
+                }
+              ]
+            },
+            {
+              "label": "Synthetic site B",
+              "points": [
+                {
+                  "x": "2026-09-01",
+                  "y": 300,
+                  "source": "Form 29 · Excel row 3",
+                  "raw": "300"
+                }
+              ]
+            }
+          ],
+          "unit": "mm²",
+          "xLabel": "Assessment date",
+          "yLabel": "Recorded product (mm²)"
+        }
+      ],
+      "answer": "Retrieved 2 target-lesion source rows. Only stored per-lesion products are plotted; repeated visit-total fields are not summed. Without stable lesion identifiers and adjudication rules, points are not connected across visits and no response category is inferred.\n\nShowing 2 of 2 result rows.",
+      "durationMs": 1564
+    },
+    {
+      "question": "Inspect the stored response assessment result and date for 01-001, including missing fields.",
+      "expectedTool": "response_assessment_review",
+      "expectedVisual": null,
+      "passed": true,
+      "modelSelected": true,
+      "provider": "ollama",
+      "calls": [
+        {
+          "name": "response_assessment_review",
+          "args": {
+            "subjectId": "01-001"
+          }
+        }
+      ],
+      "charts": [],
+      "answer": "Retrieved 1 response-assessment records. 1 have no stored response result. No response rate, treatment efficacy or failure conclusion is calculated.\n\nShowing 1 of 1 result rows.",
+      "durationMs": 1494
+    }
+  ]
+}
