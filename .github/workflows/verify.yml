@@ -12,4 +12,5 @@ jobs:
       - run: pnpm install --frozen-lockfile --ignore-scripts
       - run: pnpm test
       - run: pnpm test:clinical
+      - run: pnpm test:science
       - run: pnpm build

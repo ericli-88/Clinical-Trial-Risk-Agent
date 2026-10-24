@@ -1,6 +1,8 @@
 import { DatabaseSync } from 'node:sqlite'
 import { getDatabasePath } from './data_access/edcDatabase.js'
 import { captureSql, prepareReadOnly } from './sqlTrace.js'
+import { SCIENCE_ATOMS, validateScienceCall, executeScienceTool } from './scienceTools.js'
+import { distributionViews } from './scienceCharts.js'
 
 // Clinical field roles come from source metadata. Values and identities never enter the planner catalog.
 const LAB_FORMS = [13,14,15,16,17,22,26,27]
@@ -18,7 +20,7 @@ const aliases = {
   signed:['签署日期','Consent date'], randomized:['随机日期','Randomization date'], actualVisit:['访视日期','Actual date'],
   delay:['是否延迟下一治疗周期？','Delayed'], delayDays:['延迟天数（天）','Delay days'],
   intake:['当天入液量（ml）','Intake ml'], output:['当天出液量（ml）','Output ml'],
-  assessed:['是否评估','Assessed'], assessmentDate:['评估日期','Assessment date'], response:['评估结果','Response'],
+  age:['年龄','Age'],ageUnit:['年龄单位','Age unit'],assessed:['是否评估','Assessed'], assessmentDate:['评估日期','Assessment date'], response:['评估结果','Response'],
   lesionSite:['部位','Lesion site'], lesionProduct:['最长垂径乘积（mm2）','Product mm2'],
   assessmentReason:['评估依据','Assessment basis']
 }
@@ -40,7 +42,7 @@ export const CLINICAL_ATOMS = [
   { name:'visit_form_matrix', purpose:'Count existing records by exact subject + visit + form. Heatmap cells are record counts, not expected/overdue visits.', parameters:{subjectId:'required',formIds:'optional array of 1–8 distinct form IDs; default 2,13,15,34,35,45'}, displays:['heatmap','table'] }
   ,{ name:'lesion_measurement_review', purpose:'Review stored target-lesion products by date and site. No repeated-sum aggregation, inferred lesion matching, response classification or efficacy claim.', parameters:{subjectId:'required'}, displays:['scatter','table'] }
   ,{ name:'response_assessment_review', purpose:'Inspect stored response-assessment status, result and date. Missing outcome fields remain unavailable, not failed treatment.', parameters:{subjectId:'required'}, displays:['table'] }
-].map(atom => ({...atom, parameters:{...atom.parameters, display:`optional auto or ${atom.displays.join('/')}; default auto`}}))
+].concat(SCIENCE_ATOMS).map(atom => ({...atom, parameters:{...atom.parameters, display:`optional auto or ${atom.displays.join('/')}; default auto`}}))
 
 let connection
 const db = () => connection ||= new DatabaseSync(getDatabasePath(), {readOnly:true})
@@ -96,6 +98,7 @@ function ensureSubject(subjectId) {
   if(!found.length) throw new Error('Subject ID is not present in this snapshot; no alternative participant was selected.')
 }
 export function validateClinicalCall(call) {
+  if(SCIENCE_ATOMS.some(atom=>atom.name===call?.name))return validateScienceCall(call)
   const spec=specs.get(call?.name)
   if(!spec) throw new Error('Unknown clinical tool.')
   const args=call.args || {}
@@ -155,6 +158,7 @@ function medicationRows(data) {
 function execute(call) {
   const {name,args}=validateClinicalCall(call)
   ensureSubject(args.subjectId)
+  if(SCIENCE_ATOMS.some(atom=>atom.name===name))return executeScienceTool(call,{readForm,labRows,value,limitResult,canonicalUnit,numericObservation})
   if(name==='schema_catalog') {
     const sheets=all('SELECT sheet_index,sheet_name FROM _sheets'+(args.formId?' WHERE sheet_index=?':''),args.formId?[args.formId]:[])
     const rows=[]
@@ -185,7 +189,12 @@ function execute(call) {
     if(name==='lab_reference_review')return limitResult(`Compared ${rows.length} stored lab records with their own reference limits. Out-of-range flags do not establish CTCAE grade, causality or a treatment decision.`,rows,[visual('bar','Stored reference-range review',grouped(rows,'flag'))])
     const eligible=rows.filter(row=>row.unit!=='Unit not recorded')
     const series=lineSeries(eligible,r=>`${r.analyte} · ${r.unit}`,'date','numeric')
-    const panels=[...new Set(eligible.map(r=>r.unit))].map(unit=>visual('line',`${args.analyte} over collection dates`,series.filter(s=>s.label.endsWith(' · '+unit)),{unit,xLabel:'Collection date',yLabel:unit})).filter(panel=>panel.data.some(series=>series.points.length))
+    const panels=[...new Set(eligible.map(r=>r.unit))].map(unit=>{
+      const data=series.filter(s=>s.label.endsWith(' · '+unit))
+      const chart=visual('line',`${args.analyte} over collection dates`,data,{unit,xLabel:'Collection date',yLabel:unit})
+      const observations=data.flatMap(s=>s.points.map(p=>({value:p.y,group:s.label,source:p.source})))
+      return {...chart,alternatives:{line:chart,scatter:{...chart,kind:'scatter'},...distributionViews(observations,{title:`${args.analyte}: plotted observations`,unit})}}
+    }).filter(panel=>panel.data.some(series=>series.points.length))
     const plotted=series.reduce((sum,s)=>sum+s.points.length,0)
     return limitResult(`Retrieved ${rows.length} laboratory observations; ${plotted} numeric dated points with recorded units can be plotted. Unit typography is normalized; no unit conversion, averaging or CTCAE grading was performed. Qualified values, missing dates and missing units remain in the evidence table rather than becoming exact plotted measurements.`,rows,panels)
   }
@@ -267,7 +276,7 @@ export function executeClinicalAtom(call) {
   const spec=specs.get(call.name)
   const result=captured.value
   if(call.args?.display==='table')result.visuals=[]
-  else if(call.args?.display&&call.args.display!=='auto') for(const chart of result.visuals||[]) {
+  else if(!SCIENCE_ATOMS.some(atom=>atom.name===call.name)&&call.args?.display&&call.args.display!=='auto') for(const chart of result.visuals||[]) {
     // Date/number semantics stay owned by the task; do not coerce data into an incompatible chart.
     if(!spec.displays.includes(call.args.display))throw new Error('Incompatible chart request.')
     chart.kind=call.args.display
@@ -277,7 +286,7 @@ export function executeClinicalAtom(call) {
 
 export function getClinicalPlannerContext() {
   const columns=all('SELECT sheet_index,original_header FROM _columns ORDER BY sheet_index,excel_column_index')
-  const ids=[2,3,12,13,14,15,16,17,22,24,26,27,29,31,32,34,35,36,37,39,40,41,42,44,45,46]
+  const ids=[2,3,4,12,13,14,15,16,17,22,24,26,27,29,31,32,34,35,36,37,39,40,41,42,44,45,46]
   return ids.map(formId=>{
     const headers=columns.filter(c=>c.sheet_index===formId).map(c=>c.original_header)
     return {formId,fieldCount:headers.length,mappedRoles:Object.entries(aliases).filter(([,labels])=>labels.some(label=>headers.includes(label))).map(([role])=>role)}

@@ -13,7 +13,7 @@ Consulted 23 October 2026. The mapping below is an engineering interpretation, n
 
 ## Original ten-tool catalog
 
-The current system additionally implements fifteen [schema-aware clinical tools and chart contracts](CLINICAL-WORKFLOWS.md), for a total of 25 tools.
+The current system additionally implements fifteen [schema-aware clinical tools and chart contracts](CLINICAL-WORKFLOWS.md), plus five [data-science tools](SCIENCE-VISUALIZATIONS.md), for a total of 30 tools.
 
 | CRC need | Atom | Inputs | Operation | Boundary |
 |---|---|---|---|---|

@@ -18,7 +18,10 @@
     "test:clinical": "node scripts/test-clinical.mjs",
     "demo:clinical": "node scripts/create-clinical-fixture.mjs",
     "start:clinical": "node scripts/start-clinical-demo.mjs",
-    "eval:clinical": "node scripts/evaluate-clinical.mjs"
+    "eval:clinical": "node scripts/evaluate-clinical.mjs",
+    "start:science": "node scripts/start-science-demo.mjs",
+    "test:science": "node scripts/test-science.mjs",
+    "eval:science": "node scripts/evaluate-science.mjs"
   },
   "dependencies": {
     "express": "5.3.0",

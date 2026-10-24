@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 import { existsSync } from 'node:fs'
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 process.env.EDC_DB_PATH ||= path.join(root, 'data/synthetic.sqlite')
-process.env.EDC_DEMO = ['synthetic.sqlite','clinical-fixture.sqlite'].some(name => path.resolve(process.env.EDC_DB_PATH) === path.join(root,'data',name)) ? 'true' : 'false'
+process.env.EDC_DEMO = ['synthetic.sqlite','clinical-fixture.sqlite','science-fixture.sqlite'].some(name => path.resolve(process.env.EDC_DB_PATH) === path.join(root,'data',name)) ? 'true' : 'false'
 if (!existsSync(process.env.EDC_DB_PATH)) throw new Error('Database missing. Run npm run demo:data or configure EDC_DB_PATH.')
 const { registerCrcRoutes } = await import('./crcWorkspace.js')
 const { registerCrcAgent } = await import('./crcAgent.js')

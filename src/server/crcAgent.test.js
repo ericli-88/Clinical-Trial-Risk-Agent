@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { ATOMS, executeAtom, validateCall, validatePlan, validateRequestPlan, fallbackPlan, registerCrcAgent } from './crcAgent.js'
 import express from 'express'
 
-test('catalog has 25 executable allowlisted atoms', () => assert.equal(ATOMS.length, 25))
+test('catalog has 30 executable allowlisted atoms', () => assert.equal(ATOMS.length, 30))
 test('tool names, SQL injection and unsupported parameters are rejected', () => {
   assert.throws(() => validateCall({ name: 'run_sql', args: { sql: 'DROP TABLE excel_cells' } }))
   assert.throws(() => validateCall({ name: 'subject_snapshot', args: { subjectId: "01-001' OR 1=1" } }))

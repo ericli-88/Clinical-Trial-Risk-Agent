@@ -1,5 +1,7 @@
 # Clinical workbook: CRC workflows, atoms and visualization contracts
 
+The catalog additionally includes five [data-science chart tools](SCIENCE-VISUALIZATIONS.md), bringing the total to 30.
+
 The private workbook is the operating data source, not a prop behind a synthetic chatbot. Its original Excel rows are imported into a local read-only SQLite adapter. The public repository includes the adapter and independently generated fixtures, never participant records or private screenshots.
 
 The workbook contract covers screening, consent, enrollment, visits, laboratory observations, treatment administration, drug concentrations/rescue medication, safety, lesion measurements and follow-up forms. A row may represent a lab analyte, physical-examination item or medication entry; **row counts are not participant counts**. The implementation supports the 46-form import contract and maps original column headers through a semantic layer.

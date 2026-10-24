@@ -1,0 +1,338 @@
+{
+  "recordedAt": "2026-10-24T05:06:09.185Z",
+  "fixture": "Independent wholly synthetic science fixture",
+  "note": "12 development smoke cases; evaluates selected tool, requested chart type and completion, not clinical interpretation or held-out accuracy.",
+  "passed": 9,
+  "total": 12,
+  "results": [
+    {
+      "question": "Show a histogram of the age field in demographics form 4, using the recorded age-unit field.",
+      "expectedTool": "numeric_distribution",
+      "expectedChart": "histogram",
+      "passed": true,
+      "modelSelected": true,
+      "calls": [
+        {
+          "name": "numeric_distribution",
+          "args": {
+            "formId": 4,
+            "valueField": "age",
+            "unitField": "ageUnit",
+            "display": "histogram"
+          }
+        }
+      ],
+      "charts": [
+        {
+          "kind": "histogram",
+          "title": "age: source-value distribution",
+          "n": 6,
+          "unit": "years"
+        }
+      ],
+      "provider": "ollama",
+      "answer": "Selected 6 source records; 6 unqualified numeric values with units enter distribution charts. Unit labels come from the selected source column. Group summaries are descriptive observations, not independent-patient inference.\n\nShowing 6 of 6 result rows.",
+      "durationMs": 10908
+    },
+    {
+      "question": "Show a histogram of creatinine in chemistry form 15 across the recorded cohort. Keep units separate.",
+      "expectedTool": "lab_distribution",
+      "expectedChart": "histogram",
+      "passed": true,
+      "modelSelected": true,
+      "calls": [
+        {
+          "name": "lab_distribution",
+          "args": {
+            "formId": 15,
+            "analyte": "creatinine",
+            "display": "histogram"
+          }
+        }
+      ],
+      "charts": [
+        {
+          "kind": "histogram",
+          "title": "creatinine: recorded-value distribution",
+          "n": 7,
+          "unit": "μmol/L"
+        },
+        {
+          "kind": "histogram",
+          "title": "creatinine: recorded-value distribution",
+          "n": 1,
+          "unit": "mg/dL"
+        }
+      ],
+      "provider": "ollama",
+      "answer": "Selected 10 lab records; 8 have unqualified numeric values and recorded units, and 2 were excluded from numeric distributions. Different units are separate panels. Dates are not required for a distribution. Counts describe observations, not independent participants; no statistical significance or clinical abnormality is inferred.\n\nShowing 10 of 10 result rows.",
+      "durationMs": 1395
+    },
+    {
+      "question": "Show box plots of creatinine in form 15 grouped by visit, keeping units separate.",
+      "expectedTool": "lab_distribution",
+      "expectedChart": "box",
+      "passed": true,
+      "modelSelected": true,
+      "calls": [
+        {
+          "name": "lab_distribution",
+          "args": {
+            "formId": 15,
+            "analyte": "creatinine",
+            "groupBy": "visit",
+            "display": "box"
+          }
+        }
+      ],
+      "charts": [
+        {
+          "kind": "box",
+          "title": "creatinine: recorded-value distribution",
+          "n": 7,
+          "unit": "μmol/L"
+        },
+        {
+          "kind": "box",
+          "title": "creatinine: recorded-value distribution",
+          "n": 1,
+          "unit": "mg/dL"
+        }
+      ],
+      "provider": "ollama",
+      "answer": "Selected 10 lab records; 8 have unqualified numeric values and recorded units, and 2 were excluded from numeric distributions. Different units are separate panels. Dates are not required for a distribution. Counts describe observations, not independent participants; no statistical significance or clinical abnormality is inferred.\n\nShowing 10 of 10 result rows.",
+      "durationMs": 1405
+    },
+    {
+      "question": "Show an ECDF of recorded creatinine values from form 15, keeping units separate.",
+      "expectedTool": "lab_distribution",
+      "expectedChart": "ecdf",
+      "passed": true,
+      "modelSelected": true,
+      "calls": [
+        {
+          "name": "lab_distribution",
+          "args": {
+            "formId": 15,
+            "analyte": "creatinine",
+            "display": "ecdf"
+          }
+        }
+      ],
+      "charts": [
+        {
+          "kind": "ecdf",
+          "title": "creatinine: recorded-value distribution",
+          "n": 7,
+          "unit": "μmol/L"
+        },
+        {
+          "kind": "ecdf",
+          "title": "creatinine: recorded-value distribution",
+          "n": 1,
+          "unit": "mg/dL"
+        }
+      ],
+      "provider": "ollama",
+      "answer": "Selected 10 lab records; 8 have unqualified numeric values and recorded units, and 2 were excluded from numeric distributions. Different units are separate panels. Dates are not required for a distribution. Counts describe observations, not independent participants; no statistical significance or clinical abnormality is inferred.\n\nShowing 10 of 10 result rows.",
+      "durationMs": 1322
+    },
+    {
+      "question": "Show a KDE density plot of recorded creatinine from form 15; show unavailable if a unit group has fewer than five observations.",
+      "expectedTool": "lab_distribution",
+      "expectedChart": "density",
+      "passed": true,
+      "modelSelected": true,
+      "calls": [
+        {
+          "name": "lab_distribution",
+          "args": {
+            "formId": 15,
+            "analyte": "creatinine",
+            "display": "density"
+          }
+        }
+      ],
+      "charts": [
+        {
+          "kind": "density",
+          "title": "creatinine: recorded-value distribution",
+          "n": 7,
+          "unit": "μmol/L",
+          "status": "available"
+        },
+        {
+          "kind": "density",
+          "title": "creatinine: recorded-value distribution",
+          "n": 1,
+          "unit": "mg/dL",
+          "status": "unavailable",
+          "reason": "KDE needs at least five eligible observations in this implementation."
+        }
+      ],
+      "provider": "ollama",
+      "answer": "Selected 10 lab records; 8 have unqualified numeric values and recorded units, and 2 were excluded from numeric distributions. Different units are separate panels. Dates are not required for a distribution. Counts describe observations, not independent participants; no statistical significance or clinical abnormality is inferred.\n\nShowing 10 of 10 result rows.",
+      "durationMs": 1384
+    },
+    {
+      "question": "Scatter plot: compare creatinine in μmol/L and ALT in U/L from form 15 for 01-001, paired by exact subject, visit and collection date.",
+      "expectedTool": "lab_relationship",
+      "expectedChart": "scatter",
+      "passed": false,
+      "modelSelected": false,
+      "calls": [],
+      "charts": [],
+      "provider": "fallback",
+      "answer": "I could not validate a model-selected workflow for this request. Please specify the exact subject ID and task, or use a quick action. No data tools were run.",
+      "durationMs": 1582
+    },
+    {
+      "question": "Show a Pearson correlation heatmap of creatinine in μmol/L and ALT in U/L from form 15 for 01-001, with exact date and visit pairing.",
+      "expectedTool": "lab_relationship",
+      "expectedChart": "correlation_heatmap",
+      "passed": false,
+      "modelSelected": false,
+      "calls": [],
+      "charts": [],
+      "provider": "fallback",
+      "answer": "I could not validate a model-selected workflow for this request. Please specify the exact subject ID and task, or use a quick action. No data tools were run.",
+      "durationMs": 1640
+    },
+    {
+      "question": "Show a bar chart of recorded CTCAE grade counts across all adverse-event rows in form 45.",
+      "expectedTool": "categorical_summary",
+      "expectedChart": "bar",
+      "passed": true,
+      "modelSelected": true,
+      "calls": [
+        {
+          "name": "categorical_summary",
+          "args": {
+            "formId": 45,
+            "field": "grade",
+            "display": "bar"
+          }
+        }
+      ],
+      "charts": [
+        {
+          "kind": "bar",
+          "title": "grade: record counts",
+          "n": 5
+        }
+      ],
+      "provider": "ollama",
+      "answer": "Counted 5 existing records. Missing category values are explicit. At most 12 primary categories are named; remaining categories are combined without dropping their counts. Bars are counts, not percentages or participant-level risk.\n\nShowing 3 of 3 result rows.",
+      "durationMs": 1293
+    },
+    {
+      "question": "Show a grouped bar chart of recorded CTCAE grades split by SAE status in form 45.",
+      "expectedTool": "categorical_summary",
+      "expectedChart": "grouped_bar",
+      "passed": true,
+      "modelSelected": true,
+      "calls": [
+        {
+          "name": "categorical_summary",
+          "args": {
+            "formId": 45,
+            "field": "grade",
+            "splitBy": "sae",
+            "display": "grouped_bar"
+          }
+        }
+      ],
+      "charts": [
+        {
+          "kind": "grouped_bar",
+          "title": "grade by sae",
+          "n": 5
+        }
+      ],
+      "provider": "ollama",
+      "answer": "Counted 5 existing records. Missing category values are explicit. At most 12 primary categories are named; remaining categories are combined without dropping their counts. Bars are counts, not percentages or participant-level risk.\n\nShowing 3 of 3 result rows.",
+      "durationMs": 1468
+    },
+    {
+      "question": "Show a stacked count bar chart of recorded CTCAE grades split by SAE status in form 45.",
+      "expectedTool": "categorical_summary",
+      "expectedChart": "stacked_bar",
+      "passed": true,
+      "modelSelected": true,
+      "calls": [
+        {
+          "name": "categorical_summary",
+          "args": {
+            "formId": 45,
+            "field": "grade",
+            "splitBy": "sae",
+            "display": "stacked_bar"
+          }
+        }
+      ],
+      "charts": [
+        {
+          "kind": "stacked_bar",
+          "title": "grade composition by sae",
+          "n": 5
+        }
+      ],
+      "provider": "ollama",
+      "answer": "Counted 5 existing records. Missing category values are explicit. At most 12 primary categories are named; remaining categories are combined without dropping their counts. Bars are counts, not percentages or participant-level risk.\n\nShowing 3 of 3 result rows.",
+      "durationMs": 1452
+    },
+    {
+      "question": "Show a categorical count heatmap of recorded grade by SAE status in form 45.",
+      "expectedTool": "categorical_summary",
+      "expectedChart": "heatmap",
+      "passed": true,
+      "modelSelected": true,
+      "calls": [
+        {
+          "name": "categorical_summary",
+          "args": {
+            "formId": 45,
+            "field": "grade",
+            "splitBy": "sae",
+            "display": "heatmap"
+          }
+        }
+      ],
+      "charts": [
+        {
+          "kind": "heatmap",
+          "title": "Categorical record-count heatmap",
+          "n": 5
+        }
+      ],
+      "provider": "ollama",
+      "answer": "Counted 5 existing records. Missing category values are explicit. At most 12 primary categories are named; remaining categories are combined without dropping their counts. Bars are counts, not percentages or participant-level risk.\n\nShowing 3 of 3 result rows.",
+      "durationMs": 1422
+    },
+    {
+      "question": "Show a missing-value heatmap for the result and unit fields in laboratory form 15, grouped by visit.",
+      "expectedTool": "data_missingness_map",
+      "expectedChart": "heatmap",
+      "passed": false,
+      "modelSelected": true,
+      "calls": [
+        {
+          "name": "data_missingness_map",
+          "args": {
+            "formId": 15,
+            "fields": [
+              "result",
+              "unit"
+            ],
+            "groupBy": "visit",
+            "display": "heatmap"
+          }
+        }
+      ],
+      "charts": [],
+      "provider": "ollama",
+      "answer": "Unable to complete data_missingness_map: Field result is not mapped; inspect schema_catalog.",
+      "durationMs": 1420
+    }
+  ]
+}

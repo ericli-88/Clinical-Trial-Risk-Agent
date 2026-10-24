@@ -4,7 +4,8 @@ import { getDatabasePath, listSheets } from './data_access/edcDatabase.js'
 import { runCrcQuickAction } from './crcWorkspace.js'
 import { callChatModel } from './model_client/chatModelClient.js'
 import { CLINICAL_ATOMS, validateClinicalCall, executeClinicalAtom, getClinicalPlannerContext } from './clinicalTools.js'
-import { buildCrcPlannerMessages } from './clinicalPlanner.js'
+import { selectValidatedPlan } from './clinicalPlanner.js'
+import {CHART_RECIPES} from './scienceCharts.js'
 
 export const ATOMS = [
   { name: 'study_overview', purpose: 'Count imported forms, records and distinct subject identifiers.', parameters: {} },
@@ -138,15 +139,18 @@ export function validateRequestPlan(plan, question) {
   for (const { args } of checked.calls) {
     if (args.subjectId && !question.includes(args.subjectId)) throw new Error('Subject identifier was not provided in the request.')
     for (const key of ['plannedDate','actualDate','finding','visit']) if (args[key] && !question.includes(args[key])) throw new Error(`The ${key} input was not provided in the request.`)
+    const unitMentioned=unit=>question.toLowerCase().replaceAll('µ','μ').replaceAll(' ','').includes(unit.toLowerCase().replaceAll('µ','μ').replaceAll(' ',''))
+    if(args.unit&&!unitMentioned(args.unit))throw new Error('A supplied unit label must be explicit in the request; use a source unitField instead.')
+    for(const variable of args.variables||[])if(variable.unit&&!unitMentioned(variable.unit))throw new Error('Variable unit selection must be explicit in the request.')
+    const explicitUnits=[...new Set((question.match(/(?:[μµu]mol|mmol|mol|mg|[μµu]?g|mIU|IU|U)\s*\/\s*(?:dL|mL|L)|10\^\d+\s*\/\s*L/gi)||[]).map(unit=>unit.toLowerCase().replaceAll('µ','μ').replaceAll(' ','')))]
+    if(args.variables&&explicitUnits.length>=args.variables.length&&args.variables.some(variable=>!variable.unit))throw new Error('The request supplies measurement units for the variables. Include each matching explicit unit in its variable object; do not drop the requested unit selections.')
     if (args.windowDays !== undefined && !new RegExp(`\\b${args.windowDays}\\b`).test(question)) throw new Error('The visit window was not provided in the request.')
   }
   return checked
 }
 
-async function planQuestion(question, signal) {
-  const response = await callChatModel({ signal, temperature: 0, label: 'CRC tool selection', messages: buildCrcPlannerMessages(question, ATOMS, getClinicalPlannerContext()) })
-  const text = response.content.replace(/^```(?:json)?\s*|\s*```$/g, '').trim()
-  return { ...validateRequestPlan(JSON.parse(text), question), provider: response.provider }
+async function planQuestion(question, signal, onProgress) {
+  return selectValidatedPlan({question,catalog:ATOMS,schemaContext:getClinicalPlannerContext(),model:callChatModel,validate:validateRequestPlan,signal,onProgress})
 }
 
 const descriptions = {
@@ -163,6 +167,7 @@ const descriptions = {
 }
 
 export function registerCrcAgent(app, {planner=planQuestion} = {}) {
+  app.get('/api/crc/charts', (_req,res)=>res.json({charts:CHART_RECIPES,policy:'Charts are computed from executed queries with explicit units, populations, pairing and denominators.'}))
   app.get('/api/crc/atoms', (_req, res) => res.json({ atoms: ATOMS, policy: 'Read-only allowlisted functions; parameterized SQL; no diagnosis, write actions or invented protocol rules.' }))
   app.post('/api/crc/agent-stream', async (req, res) => {
     const question = typeof req.body?.question === 'string' ? req.body.question.trim() : ''
@@ -186,7 +191,7 @@ export function registerCrcAgent(app, {planner=planQuestion} = {}) {
         trace('You selected a quick action, so I can use its verified workflow directly.', { stage: 'routing', selection: 'quick-action' })
       } else {
         trace('I’m matching your request to the available CRC tools and checking which inputs are needed.', { stage: 'routing' })
-        try { plan = await planner(question, controller.signal); trace(`The ${plan.provider} model selected ${plan.calls.length} tool${plan.calls.length === 1 ? '' : 's'}. I checked the names and parameters before running them.`, { stage: 'plan', selection: 'model' }) }
+        try { plan = await planner(question, controller.signal, step=>trace(step.message,step)); trace(`The ${plan.provider} model selected ${plan.calls.length} tool${plan.calls.length === 1 ? '' : 's'}. I checked the names and parameters before running them.`, { stage: 'plan', selection: 'model',planningAttempts:plan.planningAttempts||1 }) }
         catch { plan = {calls:[],clarification:'I could not validate a model-selected workflow for this request. Please specify the exact subject ID and task, or use a quick action. No data tools were run.'}; trace('Model planning was unavailable or returned an invalid plan. I have stopped without running data tools; use an explicit quick action or clarify the task.', { stage: 'plan', selection: 'fallback' }) }
       }
       if (disconnected) return
