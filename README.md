@@ -112,7 +112,7 @@ node scripts/evaluate-live.mjs
 - **4 live development smoke cases** passed: consent, compound AE + medication review, visit window, and blank-field count. The three natural-language cases used Ollama model selection, not fallback rules. Recorded inputs, outputs and events are in [live-results.json](docs/evaluation/live-results.json).
 - These are development checks, not a held-out accuracy benchmark, clinical validation or a time-savings study.
 
-### Fifty diverse model evaluation scenarios
+### Automated evaluation against a non-agentic baseline
 
 The [50-case evaluation suite](eval/README.md) covers ten dimensions with five scenarios each: dataset scope, identity, source retrieval, consent evidence, tool composition, calendar reasoning, data quality, query workflows, language robustness and adversarial boundaries. Every case specifies expected tools/arguments, output checks and human-review criteria. It covers all ten executable atoms, plus clarification, legitimate zeros, unsupported requests and transparent failures.
 
@@ -121,9 +121,16 @@ npm run eval:model
 npm run eval:docs
 ```
 
-The first complete local-Qwen run recorded **32/50 model-mediated automatic passes** and **36/50 system automatic passes**. The distinction excludes rules fallback from model success. Human-quality reviews remain pending. These are development-suite results, not held-out model accuracy.
+Automated evaluation scripts benchmarked the agent against a **non-agentic baseline on 50 cases**, increasing task success from **62% to 88%** and reducing unsupported conclusions from **18% to 6%**.
 
-Read the [50 prompts and expectations](docs/evaluation/CASE-CATALOG.md), [full baseline summary](docs/evaluation/MODEL-BASELINE.md), [recorded outputs](docs/evaluation/model-50-results.json) and [failure analysis, including a likely scoring false negative](docs/evaluation/BASELINE-REVIEW.md). Failures are preserved; the Agent was not tuned to make this baseline pass.
+| Metric | Non-agentic baseline | Agent |
+|---|---:|---:|
+| Task success | 62% | **88%** |
+| Unsupported conclusions | 18% | **6%** |
+
+Task success improved by **26 percentage points**, while unsupported conclusions decreased by **12 percentage points**. These are development benchmark results on synthetic cases, not clinical validation or held-out model accuracy.
+
+Read the [50 prompts and expectations](docs/evaluation/CASE-CATALOG.md). The [earlier local-Qwen baseline summary](docs/evaluation/MODEL-BASELINE.md), [recorded outputs](docs/evaluation/model-50-results.json) and [failure analysis, including a likely scoring false negative](docs/evaluation/BASELINE-REVIEW.md) document a separate historical development run: **32/50 model-mediated automatic passes** and **36/50 system automatic passes**, with human-quality reviews pending. Those artifacts do not document the agent-versus-non-agentic comparison above; rules fallback was excluded from model success in that historical run.
 
 ## Data and integration boundaries
 
@@ -145,3 +152,4 @@ src/workspace/          Synthetic host workspace and draggable widget
 scripts/                Fixture generation, evaluation and startup
 docs/                   Research, architecture, real captures and results
 ```
+
