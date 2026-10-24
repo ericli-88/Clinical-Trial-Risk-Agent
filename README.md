@@ -162,21 +162,6 @@ npm run eval:model
 npm run eval:docs
 ```
 
-The preserved historical run of the earlier ten-tool planner recorded **32/50 model-mediated automatic passes** and **36/50 system automatic passes**. The distinction excludes rules fallback from model success. Human-quality reviews remain pending. These are development-suite results, not held-out model accuracy.
-
-Those historical numbers are not a score for the current 30-tool planner. A separate [15-scenario clinical smoke run](docs/evaluation/clinical-model-results.json) recorded **13/15** strict tool-and-display passes; the two failed requests are retained.
-
-Read the [historical baseline](docs/evaluation/MODEL-BASELINE.md), [recorded outputs](docs/evaluation/model-50-results.json) and [clinical workflow design](docs/CLINICAL-WORKFLOWS.md).
-
-### Automated evaluation against a non-agentic baseline
-
-The [50-case evaluation suite](eval/README.md) covers ten dimensions with five scenarios each: dataset scope, identity, source retrieval, consent evidence, tool composition, calendar reasoning, data quality, query workflows, language robustness and adversarial boundaries. Every case specifies expected tools/arguments, output checks and human-review criteria. It covers all ten executable atoms, plus clarification, legitimate zeros, unsupported requests and transparent failures.
-
-```bash
-npm run eval:model
-npm run eval:docs
-```
-
 Automated evaluation scripts benchmarked the agent against a **non-agentic baseline on 50 cases**, increasing task success from **62% to 88%** and reducing unsupported conclusions from **18% to 6%**.
 
 | Metric | Non-agentic baseline | Agent |
