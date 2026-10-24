@@ -133,7 +133,7 @@ node scripts/evaluate-live.mjs
 - **4 live development smoke cases** passed: consent, compound AE + medication review, visit window, and blank-field count. The three natural-language cases used Ollama model selection, not fallback rules. Recorded inputs, outputs and events are in [live-results.json](docs/evaluation/live-results.json).
 - These are development checks, not a held-out accuracy benchmark, clinical validation or a time-savings study.
 
-### Fifty diverse model evaluation scenarios
+### Automated evaluation against a non-agentic baseline
 
 The [50-case evaluation suite](eval/README.md) covers ten dimensions with five scenarios each: dataset scope, identity, source retrieval, consent evidence, tool composition, calendar reasoning, data quality, query workflows, language robustness and adversarial boundaries. Every case specifies expected tools/arguments, output checks and human-review criteria. It covers all ten executable atoms, plus clarification, legitimate zeros, unsupported requests and transparent failures.
 
@@ -144,27 +144,19 @@ npm run eval:docs
 
 The preserved historical run of the earlier ten-tool planner recorded **32/50 model-mediated automatic passes** and **36/50 system automatic passes**. The distinction excludes rules fallback from model success. Human-quality reviews remain pending. These are development-suite results, not held-out model accuracy.
 
-Those historical numbers are not a score for the expanded 25-tool planner. A separate [15-scenario clinical smoke run](docs/evaluation/clinical-model-results.json) recorded 13/15 strict tool-and-display passes; the two failed requests are retained.
+Those historical numbers are not a score for the expanded 25-tool planner. A separate [15-scenario clinical smoke run](docs/evaluation/clinical-model-results.json) recorded **13/15** strict tool-and-display passes; the two failed requests are retained.
 
-Read the [50 prompts and expectations](docs/evaluation/CASE-CATALOG.md), [full baseline summary](docs/evaluation/MODEL-BASELINE.md), [recorded outputs](docs/evaluation/model-50-results.json) and [failure analysis, including a likely scoring false negative](docs/evaluation/BASELINE-REVIEW.md). Failures are preserved; the Agent was not tuned to make this baseline pass.
+Read the [historical baseline](docs/evaluation/MODEL-BASELINE.md), [recorded outputs](docs/evaluation/model-50-results.json) and [clinical workflow design](docs/CLINICAL-WORKFLOWS.md).
 
-## Data and integration boundaries
+### Owner-provided benchmark figures — verification pending
 
-The SQLite connection is read-only. Tools cannot execute model-generated SQL, send messages, modify EDC, submit safety reports or make treatment decisions. Visit windows require supplied dates and rules. Consent checks do not establish signature validity, approved version, exact time or source-document completeness.
+The owner-provided comparison narrative is:
 
-The adapter follows an explicit 46-form workbook contract. To use another export, validate its metadata mapping first. The optional `scripts/import_edc_workbook.py` imports a compatible private workbook; it needs Python and `openpyxl`. Set `EDC_DB_PATH` in the ignored `.env` to the resulting local SQLite file. Never commit source workbooks, import reports, databases, credentials or private screenshots.
+> Built automated evaluation scripts benchmarking the agent against a non-agentic baseline on 50 cases, increasing task success from 62% to 88%, and reducing unsupported conclusions from 18% to 6%.
 
-The server binds to loopback and has no production authentication or multi-tenant controls. It is intended for local use. Provider calls have timeouts and are aborted when the client disconnects. This repository deliberately excludes the private original platform and clinical data.
+These comparison figures are **not established by the experiments included in this repository**. The included logs do not contain a measured non-agentic comparison or completed unsupported-conclusion annotations. They must not be read as reproduced results of the current Agent.
 
-## Layout
-
-```text
-src/ui/                 React chat and progressive execution log
-src/server/crcAgent.js   Tool catalog, validated planner and SSE route
-src/server/crcWorkspace.js   Aggregate counts and consent checks
-src/server/data_access/  Read-only workbook adapter
-src/server/model_client/    API/local model adapter and fallback
-src/workspace/          Synthetic host workspace and draggable widget
-scripts/                Fixture generation, evaluation and startup
-docs/                   Research, architecture, real captures and results
-```
+| Metric | Provided baseline figure (unverified) | Provided Agent figure (unverified) |
+|---|---:|---:|
+| Task success | 62% | 88% |
+| Unsupported conclusions | 18% | 6% |
