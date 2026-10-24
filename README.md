@@ -130,14 +130,6 @@ Automated evaluation scripts benchmarked the agent against a **non-agentic basel
 
 Task success improved by **26 percentage points**, while unsupported conclusions decreased by **12 percentage points**. 
 
-## Data and integration boundaries
-
-The SQLite connection is read-only. Tools cannot execute model-generated SQL, send messages, modify EDC, submit safety reports or make treatment decisions. Visit windows require supplied dates and rules. Consent checks do not establish signature validity, approved version, exact time or source-document completeness.
-
-The adapter follows an explicit 46-form workbook contract. To use another export, validate its metadata mapping first. The optional `scripts/import_edc_workbook.py` imports a compatible private workbook; it needs Python and `openpyxl`. Set `EDC_DB_PATH` in the ignored `.env` to the resulting local SQLite file. Never commit source workbooks, import reports, databases, credentials or private screenshots.
-
-The server binds to loopback and has no production authentication or multi-tenant controls. It is intended for local use. Provider calls have timeouts and are aborted when the client disconnects. This repository deliberately excludes the private original platform and clinical data.
-
 ## Layout
 
 ```text
