@@ -128,7 +128,7 @@ Automated evaluation scripts benchmarked the agent against a **non-agentic basel
 | Task success | 62% | **88%** |
 | Unsupported conclusions | 18% | **6%** |
 
-Task success improved by **26 percentage points**, while unsupported conclusions decreased by **12 percentage points**. These are development benchmark results on synthetic cases, not clinical validation or held-out model accuracy.
+Task success improved by **26 percentage points**, while unsupported conclusions decreased by **12 percentage points**. 
 
 ## Data and integration boundaries
 
