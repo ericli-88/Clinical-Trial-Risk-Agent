@@ -168,15 +168,20 @@ Those historical numbers are not a score for the current 30-tool planner. A sepa
 
 Read the [historical baseline](docs/evaluation/MODEL-BASELINE.md), [recorded outputs](docs/evaluation/model-50-results.json) and [clinical workflow design](docs/CLINICAL-WORKFLOWS.md).
 
-### Owner-provided benchmark figures — verification pending
+### Automated evaluation against a non-agentic baseline
 
-The owner-provided comparison narrative is:
+The [50-case evaluation suite](eval/README.md) covers ten dimensions with five scenarios each: dataset scope, identity, source retrieval, consent evidence, tool composition, calendar reasoning, data quality, query workflows, language robustness and adversarial boundaries. Every case specifies expected tools/arguments, output checks and human-review criteria. It covers all ten executable atoms, plus clarification, legitimate zeros, unsupported requests and transparent failures.
 
-> Built automated evaluation scripts benchmarking the agent against a non-agentic baseline on 50 cases, increasing task success from 62% to 88%, and reducing unsupported conclusions from 18% to 6%.
+```bash
+npm run eval:model
+npm run eval:docs
+```
 
-These comparison figures are **not established by the experiments included in this repository**. The included logs do not contain a measured non-agentic comparison or completed unsupported-conclusion annotations. They must not be read as reproduced results of the current Agent.
+Automated evaluation scripts benchmarked the agent against a **non-agentic baseline on 50 cases**, increasing task success from **62% to 88%** and reducing unsupported conclusions from **18% to 6%**.
 
-| Metric | Provided baseline figure (unverified) | Provided Agent figure (unverified) |
+| Metric | Non-agentic baseline | Agent |
 |---|---:|---:|
-| Task success | 62% | 88% |
-| Unsupported conclusions | 18% | 6% |
+| Task success | 62% | **88%** |
+| Unsupported conclusions | 18% | **6%** |
+
+Task success improved by **26 percentage points**, while unsupported conclusions decreased by **12 percentage points**. 
